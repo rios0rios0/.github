@@ -32,10 +32,7 @@ Use GitHub's built-in [private vulnerability reporting](https://docs.github.com/
 
 Send a detailed report to:
 
-<!-- TODO: Replace with your actual security contact email -->
 **security@rios0rios0.dev**
-
-Please encrypt sensitive details with the PGP key listed below.
 
 ### What to Include
 
@@ -75,15 +72,6 @@ All repositories consuming the [`pipelines`](https://github.com/rios0rios0/pipel
 | Quality gate | SonarQube |
 
 Automated tooling catches a large class of common vulnerabilities, but it is not exhaustive. Responsible disclosure for anything the automation misses is strongly encouraged.
-
----
-
-## PGP / GPG Public Key
-
-<!-- TODO: Add your PGP public key block or a link to a keyserver entry -->
-<!-- Example: https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xYOURKEYID -->
-
-A PGP public key will be listed here once available. Until then, please use GitHub's private vulnerability reporting as the primary disclosure channel.
 
 ---
 
