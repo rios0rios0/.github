@@ -1,0 +1,6 @@
+{
+  "name": "Java + Docker CI",
+  "description": "Full SDLC pipeline for Java/Gradle services packaged as Docker images. Runs code check (Checkstyle), security (CodeQL, Gitleaks, Semgrep, OWASP Dependency-Check, Trivy), tests, changelog/commit validation, and delivery to GHCR via rios0rios0/pipelines.",
+  "iconName": "java",
+  "categories": ["Java", "Gradle", "Docker", "CI/CD", "Security"]
+}

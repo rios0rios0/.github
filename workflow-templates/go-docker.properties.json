@@ -1,0 +1,6 @@
+{
+  "name": "Go + Docker CI",
+  "description": "Full SDLC pipeline for Go services packaged as Docker images. Runs code check, security (CodeQL, Gitleaks, Semgrep, Trivy), tests, changelog/commit validation, and delivery to GHCR via rios0rios0/pipelines.",
+  "iconName": "go",
+  "categories": ["Go", "Docker", "CI/CD", "Security"]
+}

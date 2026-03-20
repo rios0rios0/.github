@@ -1,0 +1,6 @@
+{
+  "name": ".NET + Docker CI",
+  "description": "Full SDLC pipeline for C#/.NET services packaged as Docker images. Runs code check (dotnet format), security (CodeQL, Gitleaks, Semgrep, Trivy), tests, changelog/commit validation, and delivery to GHCR via rios0rios0/pipelines.",
+  "iconName": "dotnet",
+  "categories": ["C#", ".NET", "Docker", "CI/CD", "Security"]
+}
