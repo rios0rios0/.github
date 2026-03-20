@@ -1,0 +1,6 @@
+{
+  "name": "JavaScript + Docker CI",
+  "description": "Full SDLC pipeline for JavaScript/TypeScript (Yarn) services packaged as Docker images. Runs code check (ESLint), security (Gitleaks, Semgrep, Trivy), tests, changelog/commit validation, and delivery to GHCR via rios0rios0/pipelines.",
+  "iconName": "javascript",
+  "categories": ["JavaScript", "TypeScript", "Yarn", "Docker", "CI/CD", "Security"]
+}

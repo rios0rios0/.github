@@ -1,0 +1,17 @@
+name: Terra CI
+
+on:
+  push:
+    branches: ["$default-branch"]
+  pull_request:
+    branches: ["$default-branch"]
+
+permissions:
+  contents: read
+  id-token: write
+  pull-requests: read
+
+jobs:
+  pipeline:
+    uses: rios0rios0/pipelines/.github/workflows/terra.yaml@v3
+    secrets: inherit

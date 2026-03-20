@@ -1,0 +1,46 @@
+name: Feature Request
+description: Propose a new feature or improvement
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for taking the time to suggest a feature. Please describe the problem you want solved — not just the solution.
+
+  - type: textarea
+    id: motivation
+    attributes:
+      label: Problem Statement / Motivation
+      description: What problem does this feature solve? Who is affected and how often?
+      placeholder: |
+        As a user of <tool>, I struggle with… because…
+        This causes… and forces me to work around it by…
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed Solution
+      description: Describe the feature or change you would like to see.
+      placeholder: |
+        Add a flag `--foo` that…
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives Considered
+      description: What other approaches did you consider, and why did you rule them out?
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Context
+      description: Links to prior art, related issues, mockups, or any other context.
+    validations:
+      required: false

@@ -1,0 +1,6 @@
+{
+  "name": "Terra CI",
+  "description": "CI/CD pipeline for Terraform/Terragrunt infrastructure managed with the terra CLI wrapper. Runs validation, security scanning (Checkov, Trivy), plan, and apply via rios0rios0/pipelines.",
+  "iconName": "terraform",
+  "categories": ["Terraform", "Terragrunt", "IaC", "CI/CD", "Security"]
+}

@@ -1,0 +1,6 @@
+{
+  "name": "Python + Docker CI",
+  "description": "Full SDLC pipeline for Python services packaged as Docker images. Runs code check (isort, black, flake8, mypy), security (Gitleaks, Semgrep, Safety, Trivy), tests, changelog/commit validation, and delivery to GHCR via rios0rios0/pipelines.",
+  "iconName": "python",
+  "categories": ["Python", "Docker", "CI/CD", "Security"]
+}
