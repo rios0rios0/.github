@@ -13,5 +13,5 @@ permissions:
 
 jobs:
   pipeline:
-    uses: rios0rios0/pipelines/.github/workflows/terra.yaml@main
+    uses: rios0rios0/pipelines/.github/workflows/terra.yaml@v3
     secrets: inherit

@@ -14,5 +14,5 @@ permissions:
 
 jobs:
   pipeline:
-    uses: rios0rios0/pipelines/.github/workflows/dotnet-docker.yaml@main
+    uses: rios0rios0/pipelines/.github/workflows/dotnet-docker.yaml@v3
     secrets: inherit
