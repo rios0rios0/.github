@@ -63,90 +63,19 @@ git push origin feat/my-feature
 
 **Conventional Commits is mandatory.** The CI pipeline validates every commit message and rejects non-conforming commits. [`autobump`](https://github.com/rios0rios0/autobump) relies on this to generate the `CHANGELOG.md` and determine the next semantic version automatically.
 
-### Format
+The format is `type(optional scope): short description`. Common types include `feat`, `fix`, `docs`, `refactor`, `test`, `chore`, and `ci`. Append `!` after the type or add `BREAKING CHANGE:` in the footer to flag breaking changes.
 
-```
-<type>(<optional scope>): <short description>
-
-[optional body]
-
-[optional footer(s)]
-```
-
-### Types
-
-| Type | When to use |
-|---|---|
-| `feat` | A new feature (triggers a `MINOR` version bump) |
-| `fix` | A bug fix (triggers a `PATCH` version bump) |
-| `docs` | Documentation changes only |
-| `style` | Formatting, whitespace — no logic change |
-| `refactor` | Code restructuring without feature or fix |
-| `perf` | Performance improvement |
-| `test` | Adding or correcting tests |
-| `build` | Build system or dependency changes |
-| `ci` | CI/CD pipeline changes |
-| `chore` | Maintenance tasks (housekeeping, tooling) |
-| `revert` | Reverts a previous commit |
-
-### Breaking Changes
-
-Append `!` after the type, **or** add `BREAKING CHANGE:` in the footer:
-
-```
-feat!: remove deprecated API endpoint
-
-BREAKING CHANGE: The /v1/users endpoint has been removed. Use /v2/users instead.
-```
-
-### Examples
-
-**Good commits:**
-
-```
-feat(auth): add OAuth2 PKCE flow
-fix(parser): handle empty input without panic
-docs(readme): update local setup instructions
-ci: add CodeQL scanning step
-refactor(storage)!: replace MySQL driver with pgx
-```
-
-**Bad commits — these will fail CI:**
-
-```
-Fixed stuff
-WIP
-update
-feat - add login
-```
-
-### Specification
-
-Full specification: [conventionalcommits.org](https://www.conventionalcommits.org/en/v1.0.0/)
+> For the complete specification including all types, message format rules, and examples, see the [Git Flow](https://github.com/rios0rios0/guide/wiki/Git-Flow) page in the Development Guide.
 
 ---
 
 ## Changelog
 
-Every pull request that introduces a user-facing change **must** update `CHANGELOG.md` under the `[Unreleased]` section following [Keep a Changelog v1.1.0](https://keepachangelog.com/en/1.1.0/).
+Every pull request that introduces a user-facing change **must** update `CHANGELOG.md` under the `[Unreleased]` section following [Keep a Changelog v1.1.0](https://keepachangelog.com/en/1.1.0/). Use the standard categories: Added, Changed, Deprecated, Removed, Fixed, Security.
 
-```markdown
-## [Unreleased]
+> **CI enforcement:** The pipeline validates that any PR modifying source files also touches the `[Unreleased]` section.
 
-### Added
-- Short description of new functionality (#PR-number)
-
-### Changed
-- Description of changed behaviour (#PR-number)
-
-### Fixed
-- Description of bug fix (#PR-number)
-
-### Security
-- Description of security fix (#PR-number)
-```
-
-> **CI enforcement:** The pipeline validates that any PR modifying source files also touches the `[Unreleased]` section. PRs that modify the changelog below an existing version header will fail.
+> For the full changelog standard and writing rules, see [Documentation & Change Control](https://github.com/rios0rios0/guide/wiki/Documentation-&-Change-Control) in the Development Guide.
 
 ---
 
@@ -154,11 +83,6 @@ Every pull request that introduces a user-facing change **must** update `CHANGEL
 
 - **`main`** is the only long-lived branch. All work branches off `main` and merges back into `main`.
 - **Keep your branch rebased** on top of `main` — merge commits in a PR branch are rejected by CI.
-- Branch naming convention (loosely enforced):
-  - `feat/<short-description>`
-  - `fix/<short-description>`
-  - `chore/<short-description>`
-  - `ci/<short-description>`
 
 ```bash
 # Keep your branch up-to-date
@@ -166,30 +90,23 @@ git fetch upstream
 git rebase upstream/main
 ```
 
+> For the complete branching model, naming conventions, and rebase workflow, see [Git Flow](https://github.com/rios0rios0/guide/wiki/Git-Flow) in the Development Guide.
+
 ---
 
 ## Code Quality
 
 All of the following gates run in CI. Run them locally before pushing to avoid wasted cycles.
 
-| Gate | Command | Scope |
-|---|---|---|
-| Lint | `make lint` | Language-specific linter (see below) |
-| Tests | `make test` | Unit + integration tests |
-| SAST | CI only | CodeQL, Semgrep, Gitleaks |
-| SCA | CI only | Trivy, govulncheck / Safety / OWASP Dependency-Check |
-
-### Language-Specific Linters
-
-| Language | Linter |
+| Gate | Command |
 |---|---|
-| Go | `golangci-lint` (config in `.golangci.yml`) |
-| Python | `isort` + `black` + `flake8` + `mypy` |
-| JavaScript / TypeScript | `eslint` |
-| Java | Checkstyle via Gradle |
-| C# | `dotnet format` |
+| Lint | `make lint` |
+| Tests | `make test` |
+| SAST | `make sast` (or individual targets: `make semgrep`, `make trivy`, `make hadolint`, `make gitleaks`) |
 
 New features **must** include corresponding tests. The CI pipeline enforces minimum coverage thresholds where configured.
+
+> For the full SAST toolchain, language-specific linters, and quality gate details, see [CI & CD](https://github.com/rios0rios0/guide/wiki/CI-&-CD) in the Development Guide.
 
 ---
 

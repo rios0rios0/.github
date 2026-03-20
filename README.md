@@ -34,4 +34,5 @@ See [GitHub's documentation on default community health files](https://docs.gith
 
 - **[pipelines](https://github.com/rios0rios0/pipelines)** — Production-ready SDLC pipelines (GitHub Actions, GitLab CI, Azure DevOps). All workflow templates here delegate to reusable workflows defined there.
 - **[autobump](https://github.com/rios0rios0/autobump)** — Automated CHANGELOG and release management enforcing Keep a Changelog + SemVer.
+- **[guide](https://github.com/rios0rios0/guide/wiki)** — Development standards wiki covering Git Flow, architecture, CI/CD, security, testing, and code style conventions used across all `rios0rios0` projects.
 

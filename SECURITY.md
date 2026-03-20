@@ -61,17 +61,9 @@ These are targets, not guarantees. Complex vulnerabilities may require more time
 
 ## Automated Security Tooling
 
-All repositories consuming the [`pipelines`](https://github.com/rios0rios0/pipelines) CI/CD library run the following automated security gates on every pull request and push to `main`:
+All repositories consuming the [`pipelines`](https://github.com/rios0rios0/pipelines) CI/CD library run automated security gates (SAST, secrets scanning, SCA, container scanning) on every pull request and push to `main`. These tools catch a large class of common vulnerabilities, but they are not exhaustive. Responsible disclosure for anything the automation misses is strongly encouraged.
 
-| Category | Tools |
-|---|---|
-| SAST | CodeQL, Semgrep, Hadolint |
-| Secrets scanning | Gitleaks |
-| SCA (dependencies) | Trivy, govulncheck (Go), Safety (Python), OWASP Dependency-Check (Java) |
-| Container scanning | Trivy |
-| Quality gate | SonarQube |
-
-Automated tooling catches a large class of common vulnerabilities, but it is not exhaustive. Responsible disclosure for anything the automation misses is strongly encouraged.
+> For the complete list of tools and their configurations, see the [Security](https://github.com/rios0rios0/guide/wiki/Security) and [CI & CD](https://github.com/rios0rios0/guide/wiki/CI-&-CD) pages in the Development Guide.
 
 ---
 
