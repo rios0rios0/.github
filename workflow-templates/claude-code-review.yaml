@@ -4,12 +4,13 @@ on:
   pull_request:
     types: [opened, synchronize, ready_for_review, reopened]
 
+permissions:
+  contents: 'read'
+  pull-requests: 'write'
+  issues: 'write'
+  id-token: 'write'
+
 jobs:
   claude-review:
     uses: 'rios0rios0/.github/.github/workflows/claude-code-review.yaml@main'
     secrets: inherit
-    permissions:
-      contents: 'read'
-      pull-requests: 'write'
-      issues: 'write'
-      id-token: 'write'

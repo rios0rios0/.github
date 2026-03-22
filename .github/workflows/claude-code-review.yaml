@@ -1,7 +1,11 @@
 name: 'Claude Code Review'
 
 on:
-  workflow_call: {}
+  workflow_call:
+    secrets:
+      CLAUDE_CODE_OAUTH_TOKEN:
+        required: true
+        description: 'OAuth token used by the Claude Code action'
 
 jobs:
   claude-review:
