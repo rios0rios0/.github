@@ -37,10 +37,13 @@ The reusable Claude workflows in `.github/workflows/` require a `CLAUDE_CODE_OAU
 
 ```bash
 read -sp 'CLAUDE_CODE_OAUTH_TOKEN: ' TOKEN && echo
-for repo in $(gh repo list rios0rios0 --limit 200 --json name -q '.[].name'); do
+for repo in $(gh repo list rios0rios0 --limit 1000 --json name -q '.[].name'); do
   echo -n "rios0rios0/${repo}: "
-  echo "$TOKEN" | gh secret set CLAUDE_CODE_OAUTH_TOKEN -R "rios0rios0/${repo}" 2>/dev/null \
-    && echo "OK" || echo "SKIP"
+  if echo "$TOKEN" | gh secret set CLAUDE_CODE_OAUTH_TOKEN -R "rios0rios0/${repo}"; then
+    echo "OK"
+  else
+    echo "SKIP (see error above)"
+  fi
 done
 ```
 
