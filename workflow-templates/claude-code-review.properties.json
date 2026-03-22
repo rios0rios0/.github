@@ -1,0 +1,6 @@
+{
+  "name": "Claude Code Review",
+  "description": "Automatic Claude AI code review on pull requests. Requires CLAUDE_CODE_OAUTH_TOKEN secret.",
+  "iconName": "dependabot",
+  "categories": ["AI", "Automation"]
+}

@@ -1,0 +1,6 @@
+{
+  "name": "Claude Code",
+  "description": "Claude AI assistant responding to @claude mentions in issues, PRs, and reviews. Requires CLAUDE_CODE_OAUTH_TOKEN secret.",
+  "iconName": "dependabot",
+  "categories": ["AI", "Automation"]
+}
