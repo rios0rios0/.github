@@ -22,7 +22,6 @@ jobs:
     permissions:
       contents: 'read'
     env:
-      GH_TOKEN: ${{ secrets.COMPLIANCE_AUDIT_TOKEN || secrets.GITHUB_TOKEN }}
       HARDEN_OWNER: 'rios0rios0'
     outputs:
       repos: ${{ steps.build-matrix.outputs.repos }}
@@ -39,6 +38,12 @@ jobs:
       - name: 'Build matrix'
         id: 'build-matrix'
         env:
+          # CLAUDE_MD_REFRESH_TOKEN is the fine-grained PAT owned by this workflow.
+          # Falls back to COMPLIANCE_AUDIT_TOKEN (shared read-only PAT) and finally to
+          # the ephemeral GITHUB_TOKEN, which can access the current repo per its
+          # permissions but generally cannot read metadata for other private repos.
+          # Scoped to this step only so the PAT isn't exposed to checkout/setup steps.
+          GH_TOKEN: ${{ secrets.CLAUDE_MD_REFRESH_TOKEN || secrets.COMPLIANCE_AUDIT_TOKEN || secrets.GITHUB_TOKEN }}
           REPO_INPUT: ${{ inputs.repo }}
         run: |
           set -euo pipefail
@@ -63,6 +68,7 @@ jobs:
     runs-on: 'ubuntu-latest'
     permissions:
       contents: 'read'
+      id-token: 'write'
     strategy:
       fail-fast: false
       max-parallel: 5
