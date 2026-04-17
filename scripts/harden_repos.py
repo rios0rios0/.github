@@ -37,6 +37,12 @@ REPO_SETTINGS = {
     "has_projects": False,
 }
 
+# Repos allowed to keep has_wiki=True because they host a real wiki.
+# Verified via `git ls-remote git@github.com:<OWNER>/<repo>.wiki.git`:
+# only repos with actual wiki content go here. All other repos should turn
+# the setting off since an empty wiki is noise.
+WIKI_ALLOWLIST = frozenset({"guide"})
+
 BRANCH_PROTECTION_BODY = {
     "required_pull_request_reviews": {
         "dismiss_stale_reviews": True,
@@ -337,6 +343,8 @@ def compute_issues(a):
     issues = []
 
     for k, target in REPO_SETTINGS.items():
+        if k == "has_wiki" and a.get("name") in WIKI_ALLOWLIST:
+            continue
         current = a.get(k)
         if current != target:
             issues.append(f"{k}={current}(want {target})")
@@ -490,6 +498,8 @@ def phase2_repo_settings(audits, dry_run=False):
 
         diffs = {}
         for key, target in REPO_SETTINGS.items():
+            if key == "has_wiki" and name in WIKI_ALLOWLIST:
+                continue
             current = a.get(key)
             if current != target:
                 diffs[key] = (current, target)
