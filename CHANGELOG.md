@@ -16,30 +16,29 @@ Exceptions are acceptable depending on the circumstances (critical bug fixes tha
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-04-17
+
 ### Added
 
-- added `scripts/harden_repos.py`, a compliance audit and hardening script for every `rios0rios0` GitHub repository (repo settings, Dependabot, secret scanning, branch protection, `main-protection` ruleset with admin bypass)
+- added `--list-json` mode to `scripts/harden_repos.py` that emits a JSON array of `{name, default_branch}` filtered to non-fork non-archived repos for GitHub Actions matrix consumption
+- added `.github/workflows/ai-docs-refresh.yaml`, a daily matrix workflow that runs `anthropics/claude-code-action@v1` against every non-fork non-archived `rios0rios0` repo, reviews both `CLAUDE.md` and `.github/copilot-instructions.md` against the current code, and opens a single PR on the `chore/ai-docs-refresh` branch when either file has drifted
 - added `.github/workflows/repo-compliance-audit.yaml`, a daily scheduled workflow that runs `harden_repos.py --phase 1 --fail-on-noncompliant` and fails CI when any repo drifts from the compliance policy
 - added `CLAUDE.md` at the repo root to give future Claude Code sessions the project's purpose, the `harden_repos.py` phase model and invariants, and this repo's conventions
-- added `.github/workflows/ai-docs-refresh.yaml`, a daily matrix workflow that runs `anthropics/claude-code-action@v1` against every non-fork non-archived `rios0rios0` repo, reviews both `CLAUDE.md` and `.github/copilot-instructions.md` against the current code, and opens a single PR on the `chore/ai-docs-refresh` branch when either file has drifted
+- added `scripts/harden_repos.py`, a compliance audit and hardening script for every `rios0rios0` GitHub repository (repo settings, Dependabot, secret scanning, branch protection, `main-protection` ruleset with admin bypass)
 - added `scripts/refresh_ai_docs_prompt.md`, the prompt consumed by the refresh workflow that instructs Claude to cover both Claude Code and GitHub Copilot guidance files and make no edits when the existing files are accurate
-- added `--list-json` mode to `scripts/harden_repos.py` that emits a JSON array of `{name, default_branch}` filtered to non-fork non-archived repos for GitHub Actions matrix consumption
 
 ### Changed
 
-- updated `README.md` to document `scripts/harden_repos.py`, the `repo-compliance-audit` workflow, and the `COMPLIANCE_AUDIT_TOKEN` secret
 - clarified `COMPLIANCE_AUDIT_TOKEN` documentation in `README.md` and `.github/workflows/repo-compliance-audit.yaml` to distinguish classic PAT scopes from fine-grained PAT permissions
 - updated `list_repos` in `scripts/harden_repos.py` to honor `HARDEN_OWNER` by selecting `/user/repos`, `/orgs/{owner}/repos`, or `/users/{owner}/repos` based on the authenticated user and the owner's account type
-- updated `scripts/harden_repos.py` ruleset compliance to validate the `non_fast_forward` rule and the `refs/heads/main` target, not just the ruleset name
 - updated `phase4_branch_protection` in `scripts/harden_repos.py` to skip repos when branch protection is unavailable due to plan/permissions
+- updated `README.md` to document `scripts/harden_repos.py`, the `repo-compliance-audit` workflow, and the `COMPLIANCE_AUDIT_TOKEN` secret
+- updated `scripts/harden_repos.py` ruleset compliance to validate the `non_fast_forward` rule and the `refs/heads/main` target, not just the ruleset name
 - upgraded `actions/checkout` to `v6` and `actions/upload-artifact` to `v7` across all workflows for consistency on the latest major versions
 
 ### Fixed
 
 - fixed `check_vulnerability_alerts` in `scripts/harden_repos.py` to return `None` on API failure instead of conflating "unavailable" with "disabled"; `compute_issues` now reports `dependabot_alerts=unknown` for the unknown state
-
-### Removed
-
 
 ## [0.1.0] - 2026-03-24
 
