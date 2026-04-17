@@ -18,7 +18,12 @@ Exceptions are acceptable depending on the circumstances (critical bug fixes tha
 
 ### Added
 
+- added `scripts/harden_repos.py`, a compliance audit and hardening script for every `rios0rios0` GitHub repository (repo settings, Dependabot, secret scanning, branch protection, `main-protection` ruleset with admin bypass)
+- added `.github/workflows/repo-compliance-audit.yaml`, a daily scheduled workflow that runs `harden_repos.py --phase 1 --fail-on-noncompliant` and fails CI when any repo drifts from the compliance policy
+
 ### Changed
+
+- updated `README.md` to document `scripts/harden_repos.py`, the `repo-compliance-audit` workflow, and the `COMPLIANCE_AUDIT_TOKEN` secret
 
 ### Removed
 
