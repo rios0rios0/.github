@@ -77,7 +77,7 @@ To apply remediation locally (phases 2–4), use the `/harden-repos` Claude slas
 1. Enumerates targets via `python3 scripts/harden_repos.py --list-json`.
 2. Checks out each repo into a matrix job (`max-parallel: 5`).
 3. Invokes `anthropics/claude-code-action@v1` with the prompt in `scripts/refresh_ai_docs_prompt.md`, which instructs Claude to compare both `CLAUDE.md` and `.github/copilot-instructions.md` against the code and update whichever has **drifted**.
-4. Detects meaningful drift with `git diff -w --quiet -- CLAUDE.md .github/copilot-instructions.md`. If drift is found, force-pushes to a stable `chore/ai-docs-refresh` branch on the target repo and opens (or updates) a single combined PR. Repos where both files are accurate get no PR.
+4. Marks each file intent-to-add (`git add -N`) so newly created files in repos that lacked `CLAUDE.md` or `.github/copilot-instructions.md` are visible to the diff, then detects meaningful drift with `git diff -w --quiet -- CLAUDE.md .github/copilot-instructions.md`. If drift is found, force-pushes to a stable `chore/ai-docs-refresh` branch on the target repo and opens (or updates) a single combined PR. Repos where both files are accurate get no PR.
 
 The workflow needs two repository secrets on `rios0rios0/.github`:
 

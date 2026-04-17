@@ -111,9 +111,15 @@ jobs:
           set -euo pipefail
 
           # The claude-code-action wrote (or left alone) CLAUDE.md and/or
-          # .github/copilot-instructions.md in the working tree. Use a
-          # whitespace-insensitive check so cosmetic-only diffs don't churn PRs.
-          # Include -- separator so the paths aren't misread as refs when missing.
+          # .github/copilot-instructions.md in the working tree. `git add -N`
+          # (intent-to-add) makes newly created untracked files visible to
+          # `git diff`, so a brand-new CLAUDE.md in a repo that lacked one
+          # counts as drift. `git diff -w` ignores whitespace-only changes
+          # so cosmetic diffs don't churn PRs.
+          for path in CLAUDE.md .github/copilot-instructions.md; do
+            [ -f "${path}" ] && git add -N -- "${path}"
+          done
+
           if git diff --quiet -w -- CLAUDE.md .github/copilot-instructions.md; then
             echo 'No substantive drift in AI assistant docs; skipping PR.'
             exit 0
