@@ -126,16 +126,41 @@ def gh_api_json(path, method="GET", body=None):
         return None
 
 
+def get_authenticated_user():
+    """Return the login for the authenticated GitHub user, or None on error."""
+    data = gh_api_json("/user")
+    if not data:
+        return None
+    return data.get("login")
+
+
+def get_owner_kind():
+    """Return the GitHub account type for OWNER: 'User', 'Organization', or None on error."""
+    data = gh_api_json(f"/users/{OWNER}")
+    if not data:
+        return None
+    return data.get("type")
+
+
 def list_repos():
-    """List all repos for the owner (including private, via authenticated endpoint)."""
+    """List all repos for OWNER, preserving private access when OWNER is the authenticated user."""
     repos = []
     page = 1
+    authenticated_user = get_authenticated_user()
+
+    if authenticated_user == OWNER:
+        path_template = "/user/repos?per_page=100&page={page}&affiliation=owner"
+    else:
+        owner_kind = get_owner_kind()
+        if owner_kind == "Organization":
+            path_template = f"/orgs/{OWNER}/repos?per_page=100&page={{page}}&type=all"
+        else:
+            path_template = f"/users/{OWNER}/repos?per_page=100&page={{page}}&type=owner"
+
     while True:
-        rc, out, err = gh_api(
-            f"/user/repos?per_page=100&page={page}&affiliation=owner", timeout=60
-        )
+        rc, out, err = gh_api(path_template.format(page=page), timeout=60)
         if rc != 0:
-            print(f"ERROR listing repos: {err}")
+            print(f"ERROR listing repos for {OWNER}: {err}")
             sys.exit(1)
         batch = json.loads(out)
         if not batch:
@@ -183,15 +208,22 @@ def get_required_signatures(name):
 
 
 def check_vulnerability_alerts(name):
-    """Check if Dependabot vulnerability alerts are enabled. Returns True/False/None."""
+    """Check if Dependabot vulnerability alerts are enabled.
+
+    Returns:
+        True  -- alerts are enabled (HTTP 204)
+        False -- alerts are disabled (HTTP 404)
+        None  -- could not determine (API error, insufficient permissions, etc.)
+    """
     rc, out, err = gh_api(
         f"/repos/{OWNER}/{name}/vulnerability-alerts", raw=True
     )
-    if rc == 0 and "204" in out.split("\n")[0]:
+    status_line = (out or "").split("\n", 1)[0]
+    if "204" in status_line:
         return True
-    if "204" in (out or ""):
-        return True
-    return False
+    if "404" in status_line:
+        return False
+    return None
 
 
 def check_automated_security_fixes(name):
@@ -252,15 +284,26 @@ def audit_repo(name, repo_list_data=None):
     audit["has_force_push_ruleset"] = audit["ruleset_id"] is not None
 
     if audit["ruleset_id"]:
-        details = get_ruleset_details(name, audit["ruleset_id"])
-        bypass = (details or {}).get("bypass_actors") or []
+        details = get_ruleset_details(name, audit["ruleset_id"]) or {}
+        bypass = details.get("bypass_actors") or []
         has_admin_bypass = any(
             a.get("actor_type") == "RepositoryRole" and a.get("actor_id") == 5
             for a in bypass
         )
         audit["ruleset_admin_bypass"] = has_admin_bypass
+
+        rules = details.get("rules") or []
+        audit["ruleset_has_non_fast_forward"] = any(
+            r.get("type") == "non_fast_forward" for r in rules
+        )
+
+        conditions = details.get("conditions") or {}
+        ref_name_include = (conditions.get("ref_name") or {}).get("include") or []
+        audit["ruleset_targets_main"] = "refs/heads/main" in ref_name_include or "~DEFAULT_BRANCH" in ref_name_include
     else:
         audit["ruleset_admin_bypass"] = False
+        audit["ruleset_has_non_fast_forward"] = False
+        audit["ruleset_targets_main"] = False
 
     # branch protection
     prot, reason = get_branch_protection(name)
@@ -298,7 +341,10 @@ def compute_issues(a):
         if current != target:
             issues.append(f"{k}={current}(want {target})")
 
-    if not a.get("dependabot_alerts"):
+    dependabot_alerts = a.get("dependabot_alerts")
+    if dependabot_alerts is None:
+        issues.append("dependabot_alerts=unknown")
+    elif not dependabot_alerts:
         issues.append("dependabot_alerts=off")
     if not a.get("dependabot_updates"):
         issues.append("dependabot_updates=off")
@@ -325,8 +371,13 @@ def compute_issues(a):
 
         if not a.get("has_force_push_ruleset"):
             issues.append("ruleset_non_fast_forward=missing")
-        elif not a.get("ruleset_admin_bypass"):
-            issues.append("ruleset_admin_bypass=missing")
+        else:
+            if not a.get("ruleset_has_non_fast_forward"):
+                issues.append("ruleset_non_fast_forward=rule_missing")
+            if not a.get("ruleset_targets_main"):
+                issues.append("ruleset_targets_main=missing")
+            if not a.get("ruleset_admin_bypass"):
+                issues.append("ruleset_admin_bypass=missing")
 
     return issues
 
@@ -548,6 +599,11 @@ def phase4_branch_protection(audits, dry_run=False):
 
         if a["private"]:
             print(f"  {name}: SKIP (private repo, GitHub Free)")
+            skipped += 1
+            continue
+
+        if not a.get("protection_available", True):
+            print(f"  {name}: SKIP (branch protection unavailable due to plan/permissions)")
             skipped += 1
             continue
 

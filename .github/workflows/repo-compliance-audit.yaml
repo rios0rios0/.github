@@ -17,9 +17,11 @@ jobs:
     permissions:
       contents: read
     env:
-      # PAT with `repo` + `admin:repo_hook` scopes, exposed as GH_TOKEN so `gh api`
-      # can list private repos and read security/ruleset endpoints. Falls back to
-      # the default GITHUB_TOKEN if the secret is not set (cross-repo calls will fail).
+      # Personal access token exposed as GH_TOKEN for `gh api`. If using a classic
+      # PAT, grant `repo` plus any required admin access. If using a fine-grained
+      # PAT, grant the repository permissions needed to list private repos and read
+      # ruleset/security-related endpoints. Falls back to the default GITHUB_TOKEN
+      # if the secret is not set (cross-repo calls will fail).
       GH_TOKEN: ${{ secrets.COMPLIANCE_AUDIT_TOKEN || secrets.GITHUB_TOKEN }}
       HARDEN_OWNER: rios0rios0
     steps:

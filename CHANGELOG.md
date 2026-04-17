@@ -24,6 +24,14 @@ Exceptions are acceptable depending on the circumstances (critical bug fixes tha
 ### Changed
 
 - updated `README.md` to document `scripts/harden_repos.py`, the `repo-compliance-audit` workflow, and the `COMPLIANCE_AUDIT_TOKEN` secret
+- clarified `COMPLIANCE_AUDIT_TOKEN` documentation in `README.md` and `.github/workflows/repo-compliance-audit.yaml` to distinguish classic PAT scopes from fine-grained PAT permissions
+- updated `list_repos` in `scripts/harden_repos.py` to honor `HARDEN_OWNER` by selecting `/user/repos`, `/orgs/{owner}/repos`, or `/users/{owner}/repos` based on the authenticated user and the owner's account type
+- updated `scripts/harden_repos.py` ruleset compliance to validate the `non_fast_forward` rule and the `refs/heads/main` target, not just the ruleset name
+- updated `phase4_branch_protection` in `scripts/harden_repos.py` to skip repos when branch protection is unavailable due to plan/permissions
+
+### Fixed
+
+- fixed `check_vulnerability_alerts` in `scripts/harden_repos.py` to return `None` on API failure instead of conflating "unavailable" with "disabled"; `compute_issues` now reports `dependabot_alerts=unknown` for the unknown state
 
 ### Removed
 
