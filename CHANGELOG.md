@@ -28,6 +28,7 @@ Exceptions are acceptable depending on the circumstances (critical bug fixes tha
 - updated `list_repos` in `scripts/harden_repos.py` to honor `HARDEN_OWNER` by selecting `/user/repos`, `/orgs/{owner}/repos`, or `/users/{owner}/repos` based on the authenticated user and the owner's account type
 - updated `scripts/harden_repos.py` ruleset compliance to validate the `non_fast_forward` rule and the `refs/heads/main` target, not just the ruleset name
 - updated `phase4_branch_protection` in `scripts/harden_repos.py` to skip repos when branch protection is unavailable due to plan/permissions
+- upgraded `actions/checkout` to `v6` and `actions/upload-artifact` to `v7` across all workflows for consistency on the latest major versions
 
 ### Fixed
 

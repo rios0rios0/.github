@@ -26,7 +26,7 @@ jobs:
       HARDEN_OWNER: rios0rios0
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Set up Python
         uses: actions/setup-python@v6
@@ -42,7 +42,7 @@ jobs:
 
       - name: Upload audit report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: compliance-audit-${{ github.run_number }}
           path: /tmp/gh_hardening_audit_before.json
