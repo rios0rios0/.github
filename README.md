@@ -70,6 +70,28 @@ The token must be able to list all private repos under the account and read secu
 
 To apply remediation locally (phases 2–4), use the `/harden-repos` Claude slash command, which wraps the same `scripts/harden_repos.py` from your `~/.claude/scripts/` copy.
 
+## AI Assistant Docs Refresh
+
+`.github/workflows/ai-docs-refresh.yaml` runs daily at 07:00 UTC (one hour after the compliance audit). For every non-fork non-archived `rios0rios0` repo it:
+
+1. Enumerates targets via `python3 scripts/harden_repos.py --list-json`.
+2. Checks out each repo into a matrix job (`max-parallel: 5`).
+3. Invokes `anthropics/claude-code-action@v1` with the prompt in `scripts/refresh_ai_docs_prompt.md`, which instructs Claude to compare both `CLAUDE.md` and `.github/copilot-instructions.md` against the code and update whichever has **drifted**.
+4. Marks each file intent-to-add (`git add -N`) so newly created files in repos that lacked `CLAUDE.md` or `.github/copilot-instructions.md` are visible to the diff, then detects meaningful drift with `git diff -w --quiet -- CLAUDE.md .github/copilot-instructions.md`. If drift is found, force-pushes to a stable `chore/ai-docs-refresh` branch on the target repo and opens (or updates) a single combined PR. Repos where both files are accurate get no PR.
+
+The workflow needs two repository secrets on `rios0rios0/.github`:
+
+| Secret | Purpose | Scope |
+|---|---|---|
+| `CLAUDE_CODE_OAUTH_TOKEN` | Authenticates `anthropics/claude-code-action@v1` (already set for the existing Claude workflows). | n/a |
+| `CLAUDE_MD_REFRESH_TOKEN` | Pushes the `chore/ai-docs-refresh` branch and opens PRs on every target repo. Distinct from the read-only `COMPLIANCE_AUDIT_TOKEN`. | Fine-grained PAT scoped to all repositories under `rios0rios0`, with `Contents: write`, `Pull requests: write`, and `Metadata: read`. |
+
+To test against a single repo before letting the cron run account-wide, trigger the workflow manually with the `repo` input:
+
+```bash
+gh workflow run ai-docs-refresh.yaml -R rios0rios0/.github -f repo=autobump
+```
+
 ## Related Repositories
 
 - **[pipelines](https://github.com/rios0rios0/pipelines)** — Production-ready SDLC pipelines (GitHub Actions, GitLab CI, Azure DevOps). All workflow templates here delegate to reusable workflows defined there.

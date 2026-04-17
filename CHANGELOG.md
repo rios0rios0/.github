@@ -20,6 +20,10 @@ Exceptions are acceptable depending on the circumstances (critical bug fixes tha
 
 - added `scripts/harden_repos.py`, a compliance audit and hardening script for every `rios0rios0` GitHub repository (repo settings, Dependabot, secret scanning, branch protection, `main-protection` ruleset with admin bypass)
 - added `.github/workflows/repo-compliance-audit.yaml`, a daily scheduled workflow that runs `harden_repos.py --phase 1 --fail-on-noncompliant` and fails CI when any repo drifts from the compliance policy
+- added `CLAUDE.md` at the repo root to give future Claude Code sessions the project's purpose, the `harden_repos.py` phase model and invariants, and this repo's conventions
+- added `.github/workflows/ai-docs-refresh.yaml`, a daily matrix workflow that runs `anthropics/claude-code-action@v1` against every non-fork non-archived `rios0rios0` repo, reviews both `CLAUDE.md` and `.github/copilot-instructions.md` against the current code, and opens a single PR on the `chore/ai-docs-refresh` branch when either file has drifted
+- added `scripts/refresh_ai_docs_prompt.md`, the prompt consumed by the refresh workflow that instructs Claude to cover both Claude Code and GitHub Copilot guidance files and make no edits when the existing files are accurate
+- added `--list-json` mode to `scripts/harden_repos.py` that emits a JSON array of `{name, default_branch}` filtered to non-fork non-archived repos for GitHub Actions matrix consumption
 
 ### Changed
 
