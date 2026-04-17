@@ -18,8 +18,9 @@ This is a special `.github` repository that acts as the **default community heal
 | `.editorconfig` | Editor configuration defaults |
 | `ISSUE_TEMPLATE/` | YAML-based bug report and feature request forms |
 | `PULL_REQUEST_TEMPLATE.md` | Default PR checklist |
-| `.github/workflows/` | Reusable Claude Code workflows (PR assistant and automatic code review) |
+| `.github/workflows/` | Reusable Claude Code workflows (PR assistant and automatic code review) and the daily org-wide `repo-compliance-audit` workflow |
 | `workflow-templates/` | Reusable CI/CD starter workflows for each supported language stack |
+| `scripts/harden_repos.py` | Repo hardening and compliance-audit script, invoked by the `repo-compliance-audit` workflow and the `/harden-repos` Claude slash command |
 
 ## How the Fallback Mechanism Works
 
@@ -51,6 +52,23 @@ Then add the caller workflows to each repo (or use the workflow templates from t
 
 - `workflow-templates/claude.yaml` — Claude PR assistant (`@claude` mentions)
 - `workflow-templates/claude-code-review.yaml` — automatic code review on PRs
+
+## Repo Compliance Audit
+
+`.github/workflows/repo-compliance-audit.yaml` runs daily (and on demand via `workflow_dispatch`) and invokes `scripts/harden_repos.py --phase 1 --fail-on-noncompliant`. The job fails if any `rios0rios0` repo drifts from the compliance policy (Dependabot on, secret scanning + push protection on public repos, branch protection with required signatures, `main-protection` ruleset with admin bypass, `has_wiki`/`has_projects` off, etc.).
+
+The workflow reads from a `COMPLIANCE_AUDIT_TOKEN` repository secret. Create a Personal Access Token and store it:
+
+```bash
+gh secret set COMPLIANCE_AUDIT_TOKEN -R rios0rios0/.github
+```
+
+The token must be able to list all private repos under the account and read security/ruleset endpoints. You can use either:
+
+- **Classic PAT** with the `repo` and `admin:repo_hook` scopes (simplest option); or
+- **Fine-grained PAT** scoped to all repositories under the account, with read access to `Administration`, `Contents`, `Metadata`, `Webhooks`, and read/write (or as needed) access to `Dependabot alerts` and `Secret scanning alerts`. Fine-grained PATs use per-resource permissions rather than OAuth scopes.
+
+To apply remediation locally (phases 2–4), use the `/harden-repos` Claude slash command, which wraps the same `scripts/harden_repos.py` from your `~/.claude/scripts/` copy.
 
 ## Related Repositories
 
