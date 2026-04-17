@@ -763,7 +763,23 @@ def main():
         action="store_true",
         help="After auditing, exit 1 if any repo is non-compliant. Intended for CI usage.",
     )
+    parser.add_argument(
+        "--list-json",
+        action="store_true",
+        help="Emit a JSON array of non-fork, non-archived repos ({name, default_branch}) and exit. "
+             "Intended for GitHub Actions matrix consumption.",
+    )
     args = parser.parse_args()
+
+    if args.list_json:
+        repos = list_repos()
+        eligible = [
+            {"name": r["name"], "default_branch": r.get("default_branch", DEFAULT_BRANCH)}
+            for r in repos
+            if not r.get("fork") and not r.get("archived")
+        ]
+        print(json.dumps(eligible))
+        return
 
     if args.dry_run and args.phase:
         print("--dry-run runs all phases 1-4 in dry-run mode. Ignoring --phase.")

@@ -20,6 +20,10 @@ Exceptions are acceptable depending on the circumstances (critical bug fixes tha
 
 - added `scripts/harden_repos.py`, a compliance audit and hardening script for every `rios0rios0` GitHub repository (repo settings, Dependabot, secret scanning, branch protection, `main-protection` ruleset with admin bypass)
 - added `.github/workflows/repo-compliance-audit.yaml`, a daily scheduled workflow that runs `harden_repos.py --phase 1 --fail-on-noncompliant` and fails CI when any repo drifts from the compliance policy
+- added `CLAUDE.md` at the repo root to give future Claude Code sessions the project's purpose, the `harden_repos.py` phase model and invariants, and this repo's conventions
+- added `.github/workflows/claude-md-refresh.yaml`, a daily workflow that runs `anthropics/claude-code-action@v1` against every non-fork non-archived `rios0rios0` repo and opens a PR only when the target repo's `CLAUDE.md` has drifted from its code
+- added `scripts/refresh_claude_md_prompt.md`, the prompt consumed by the refresh workflow that instructs Claude to make no edits when the existing `CLAUDE.md` is accurate
+- added `--list-json` mode to `scripts/harden_repos.py` that emits a JSON array of `{name, default_branch}` filtered to non-fork non-archived repos for GitHub Actions matrix consumption
 
 ### Changed
 

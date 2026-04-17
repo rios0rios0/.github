@@ -70,6 +70,28 @@ The token must be able to list all private repos under the account and read secu
 
 To apply remediation locally (phases 2–4), use the `/harden-repos` Claude slash command, which wraps the same `scripts/harden_repos.py` from your `~/.claude/scripts/` copy.
 
+## CLAUDE.md Refresh
+
+`.github/workflows/claude-md-refresh.yaml` runs daily at 07:00 UTC (one hour after the compliance audit). For every non-fork non-archived `rios0rios0` repo it:
+
+1. Enumerates targets via `python3 scripts/harden_repos.py --list-json`.
+2. Checks out each repo into a matrix job (`max-parallel: 5`).
+3. Invokes `anthropics/claude-code-action@v1` with the prompt in `scripts/refresh_claude_md_prompt.md`, which instructs Claude to compare the existing `CLAUDE.md` against the code and update it **only if drifted**.
+4. Detects meaningful drift with `git diff -w --quiet -- CLAUDE.md`. If drift is found, force-pushes to a stable `chore/claude-md-refresh` branch on the target repo and opens (or updates) a PR. Repos that are already accurate get no PR.
+
+The workflow needs two repository secrets on `rios0rios0/.github`:
+
+| Secret | Purpose | Scope |
+|---|---|---|
+| `CLAUDE_CODE_OAUTH_TOKEN` | Authenticates `anthropics/claude-code-action@v1` (already set for the existing Claude workflows). | n/a |
+| `CLAUDE_MD_REFRESH_TOKEN` | Pushes the `chore/claude-md-refresh` branch and opens PRs on every target repo. Distinct from the read-only `COMPLIANCE_AUDIT_TOKEN`. | Fine-grained PAT scoped to all repositories under `rios0rios0`, with `Contents: write`, `Pull requests: write`, and `Metadata: read`. |
+
+To test against a single repo before letting the cron run account-wide, trigger the workflow manually with the `repo` input:
+
+```bash
+gh workflow run claude-md-refresh.yaml -R rios0rios0/.github -f repo=autobump
+```
+
 ## Related Repositories
 
 - **[pipelines](https://github.com/rios0rios0/pipelines)** — Production-ready SDLC pipelines (GitHub Actions, GitLab CI, Azure DevOps). All workflow templates here delegate to reusable workflows defined there.
