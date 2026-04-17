@@ -24,6 +24,7 @@ Exceptions are acceptable depending on the circumstances (critical bug fixes tha
 - added `.github/workflows/ai-docs-refresh.yaml`, a daily matrix workflow that runs `anthropics/claude-code-action@v1` against every non-fork non-archived `rios0rios0` repo, reviews both `CLAUDE.md` and `.github/copilot-instructions.md` against the current code, and opens a single PR on the `chore/ai-docs-refresh` branch when either file has drifted
 - added `scripts/refresh_ai_docs_prompt.md`, the prompt consumed by the refresh workflow that instructs Claude to cover both Claude Code and GitHub Copilot guidance files and make no edits when the existing files are accurate
 - added `--list-json` mode to `scripts/harden_repos.py` that emits a JSON array of `{name, default_branch}` filtered to non-fork non-archived repos for GitHub Actions matrix consumption
+- added `WIKI_ALLOWLIST` to `scripts/harden_repos.py` so repos that host an actual wiki (currently only `guide`) keep `has_wiki=True` without being flagged or reverted by phase 2; verified via `git ls-remote <repo>.wiki.git` that all other `has_wiki=True` repos had empty wikis
 
 ### Changed
 
