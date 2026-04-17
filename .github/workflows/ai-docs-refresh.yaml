@@ -22,7 +22,10 @@ jobs:
     permissions:
       contents: 'read'
     env:
-      GH_TOKEN: ${{ secrets.COMPLIANCE_AUDIT_TOKEN || secrets.GITHUB_TOKEN }}
+      # CLAUDE_MD_REFRESH_TOKEN is the fine-grained PAT owned by this workflow.
+      # Falls back to COMPLIANCE_AUDIT_TOKEN (shared read-only PAT) and finally to
+      # the ephemeral GITHUB_TOKEN, which only sees public repo metadata.
+      GH_TOKEN: ${{ secrets.CLAUDE_MD_REFRESH_TOKEN || secrets.COMPLIANCE_AUDIT_TOKEN || secrets.GITHUB_TOKEN }}
       HARDEN_OWNER: 'rios0rios0'
     outputs:
       repos: ${{ steps.build-matrix.outputs.repos }}
