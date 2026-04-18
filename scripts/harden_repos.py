@@ -347,11 +347,17 @@ def compute_issues(a):
     for k, target in REPO_SETTINGS.items():
         if k == "has_wiki" and a.get("name") in WIKI_ALLOWLIST:
             continue
-        # allow_auto_merge is a GitHub Team feature for private repos; the API
-        # silently ignores PATCH attempts on GitHub Free, so don't flag it.
-        if k == "allow_auto_merge" and is_private:
-            continue
         current = a.get(k)
+        # allow_auto_merge is a GitHub Team feature for private repos; the API
+        # silently ignores PATCH attempts on GitHub Free when the policy wants
+        # it enabled, so only skip that specific unfixable case.
+        if (
+            k == "allow_auto_merge"
+            and is_private
+            and target is True
+            and current is False
+        ):
+            continue
         if current != target:
             issues.append(f"{k}={current}(want {target})")
 
@@ -512,9 +518,10 @@ def phase2_repo_settings(audits, dry_run=False):
         for key, target in REPO_SETTINGS.items():
             if key == "has_wiki" and name in WIKI_ALLOWLIST:
                 continue
-            # allow_auto_merge is a GitHub Team feature for private repos;
-            # the API silently ignores PATCH on Free, so don't attempt it.
-            if key == "allow_auto_merge" and a.get("private"):
+            # Enabling allow_auto_merge on private repos is not supported on
+            # GitHub Free; the API silently ignores PATCH in that case, so
+            # skip only the unsupported target=True case.
+            if key == "allow_auto_merge" and a.get("private") and target is True:
                 continue
             current = a.get(key)
             if current != target:
