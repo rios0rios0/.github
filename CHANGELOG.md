@@ -25,6 +25,7 @@ Exceptions are acceptable depending on the circumstances (critical bug fixes tha
 - added `scripts/refresh_ai_docs_prompt.md`, the prompt consumed by the refresh workflow that instructs Claude to cover both Claude Code and GitHub Copilot guidance files and make no edits when the existing files are accurate
 - added `--list-json` mode to `scripts/harden_repos.py` that emits a JSON array of `{name, default_branch}` filtered to non-fork non-archived repos for GitHub Actions matrix consumption
 - added `WIKI_ALLOWLIST` to `scripts/harden_repos.py` so repos that host an actual wiki (currently only `guide`) keep `has_wiki=True` without being flagged or reverted by phase 2; verified via `git ls-remote <repo>.wiki.git` that all other `has_wiki=True` repos had empty wikis
+- added carve-outs to `scripts/harden_repos.py` compliance policy: `allow_auto_merge` is skipped for private repos (GitHub Free silently ignores the `PATCH`, making the check unfixable); `secret_scanning`, `push_protection`, `dependabot_alerts`, and `dependabot_updates` are skipped for forks (every upstream sync wipes Dependabot work and secret scanning belongs to the upstream owner). Phase 2 no longer attempts `allow_auto_merge=True` on private repos, and phase 3 now skips forks entirely with a `SKIP (fork)` line
 
 ### Changed
 

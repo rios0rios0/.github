@@ -341,29 +341,41 @@ def compute_issues(a):
         return [f"audit_error: {a['error']}"]
 
     issues = []
+    is_fork = bool(a.get("fork"))
+    is_private = bool(a.get("private"))
 
     for k, target in REPO_SETTINGS.items():
         if k == "has_wiki" and a.get("name") in WIKI_ALLOWLIST:
+            continue
+        # allow_auto_merge is a GitHub Team feature for private repos; the API
+        # silently ignores PATCH attempts on GitHub Free, so don't flag it.
+        if k == "allow_auto_merge" and is_private:
             continue
         current = a.get(k)
         if current != target:
             issues.append(f"{k}={current}(want {target})")
 
-    dependabot_alerts = a.get("dependabot_alerts")
-    if dependabot_alerts is None:
-        issues.append("dependabot_alerts=unknown")
-    elif not dependabot_alerts:
-        issues.append("dependabot_alerts=off")
-    if not a.get("dependabot_updates"):
-        issues.append("dependabot_updates=off")
+    # Forks track upstream; Dependabot activity on them is lost on every upstream
+    # sync and is the upstream owner's responsibility, so the policy excludes them.
+    if not is_fork:
+        dependabot_alerts = a.get("dependabot_alerts")
+        if dependabot_alerts is None:
+            issues.append("dependabot_alerts=unknown")
+        elif not dependabot_alerts:
+            issues.append("dependabot_alerts=off")
+        if not a.get("dependabot_updates"):
+            issues.append("dependabot_updates=off")
 
     # secret scanning / branch protection / ruleset are only enforced on public repos
-    # (private repos on GitHub Free don't support them)
-    if not a.get("private") and a.get("protection_available", True):
-        if a.get("secret_scanning") != "enabled":
-            issues.append(f"secret_scanning={a.get('secret_scanning')}")
-        if a.get("push_protection") != "enabled":
-            issues.append(f"push_protection={a.get('push_protection')}")
+    # (private repos on GitHub Free don't support them).
+    if not is_private and a.get("protection_available", True):
+        # Secret scanning / push protection are skipped for forks for the same
+        # reason as Dependabot above.
+        if not is_fork:
+            if a.get("secret_scanning") != "enabled":
+                issues.append(f"secret_scanning={a.get('secret_scanning')}")
+            if a.get("push_protection") != "enabled":
+                issues.append(f"push_protection={a.get('push_protection')}")
 
         if not a.get("protection_enabled"):
             issues.append("branch_protection=off")
@@ -500,6 +512,10 @@ def phase2_repo_settings(audits, dry_run=False):
         for key, target in REPO_SETTINGS.items():
             if key == "has_wiki" and name in WIKI_ALLOWLIST:
                 continue
+            # allow_auto_merge is a GitHub Team feature for private repos;
+            # the API silently ignores PATCH on Free, so don't attempt it.
+            if key == "allow_auto_merge" and a.get("private"):
+                continue
             current = a.get(key)
             if current != target:
                 diffs[key] = (current, target)
@@ -533,6 +549,12 @@ def phase3_security(audits, dry_run=False):
     for a in audits:
         name = a["name"]
         if "error" in a:
+            continue
+
+        # Forks track upstream; secret scanning / Dependabot work on them is
+        # wiped on every upstream sync and isn't the fork owner's responsibility.
+        if a.get("fork"):
+            print(f"  {name}: SKIP (fork)")
             continue
 
         if not a["private"]:
