@@ -72,7 +72,7 @@ To apply remediation locally (phases 2–4), use the `/harden-repos` Claude slas
 
 ## AI Assistant Docs Refresh
 
-`.github/workflows/ai-docs-refresh.yaml` runs daily at 07:00 UTC (one hour after the compliance audit). For every non-fork non-archived `rios0rios0` repo it:
+`.github/workflows/ai-docs-refresh.yaml` runs weekly on Mondays at 07:00 UTC (one hour after the compliance audit). For every non-fork non-archived `rios0rios0` repo it:
 
 1. Enumerates targets via `python3 scripts/harden_repos.py --list-json`.
 2. Checks out each repo into a matrix job (`max-parallel: 5`).

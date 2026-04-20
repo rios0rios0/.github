@@ -51,7 +51,7 @@ Two files are in scope, both optional:
 ## Commit discipline
 
 - If and only if you modify `CLAUDE.md` or `.github/copilot-instructions.md`, the host workflow will detect the diff and open a PR. You do not need to run git commands yourself.
-- If you decide both files are accurate (or should not be created), do nothing. Daily no-op runs are expected and correct.
+- If you decide both files are accurate (or should not be created), do nothing. Weekly no-op runs are expected and correct.
 - Never edit any file other than `CLAUDE.md` or `.github/copilot-instructions.md`. Never run destructive commands. Never push, tag, or merge.
 
 ## Tone
