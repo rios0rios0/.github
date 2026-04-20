@@ -16,6 +16,8 @@ Exceptions are acceptable depending on the circumstances (critical bug fixes tha
 
 ## [Unreleased]
 
+## [0.2.1] - 2026-04-20
+
 ### Changed
 
 - changed `.github/workflows/ai-docs-refresh.yaml` schedule from daily to weekly (Mondays at 07:00 UTC) to reduce drift-check noise and API usage; documentation in `README.md`, `CLAUDE.md`, the PR body, and `scripts/refresh_ai_docs_prompt.md` was updated accordingly
