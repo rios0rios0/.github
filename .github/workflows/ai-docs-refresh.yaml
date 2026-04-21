@@ -154,6 +154,15 @@ jobs:
           # If Claude deleted either (unexpected), stage the removal too.
           git add -u CLAUDE.md .github/copilot-instructions.md 2>/dev/null || true
           git commit -m 'chore(ai-docs): refreshed AI assistant guidance'
+
+          # `anthropics/claude-code-action@v1` rewrites `origin` to point at
+          # `github.repository` (this workflow-hosting `.github` repo) regardless
+          # of which repo `actions/checkout@v6` pulled. Without this reset, the
+          # push lands on `rios0rios0/.github`, not the target repo, and then
+          # `gh pr create --repo ${TARGET_REPO}` fails with "No commits between
+          # main and chore/ai-docs-refresh, Head ref must be a branch".
+          git remote set-url origin \
+            "https://x-access-token:${GH_TOKEN}@github.com/${TARGET_REPO}.git"
           git push --force --set-upstream origin "${BRANCH}"
 
           if gh pr view "${BRANCH}" --repo "${TARGET_REPO}" --json number >/dev/null 2>&1; then
