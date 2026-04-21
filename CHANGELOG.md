@@ -16,10 +16,18 @@ Exceptions are acceptable depending on the circumstances (critical bug fixes tha
 
 ## [Unreleased]
 
+### Fixed
+
+- fixed `CLAUDE.md` references to workflow-template file extensions so both `*.yml` (language templates) and `*.yaml` (Claude templates) are covered when describing paired `*.properties.json` files and the inspection checklist
+
 ### Changed
 
 - changed `.github/workflows/ai-docs-refresh.yaml` matrix concurrency from `max-parallel: 5` to `max-parallel: 1` so the refresh job iterates serially through the ~60 target repos, feeding Anthropic's API a steady drip instead of a parallel burst and keeping the per-minute rate limit out of the failure envelope; `README.md` and the adjacent workflow comment were updated to match
 - tightened the `anthropics/claude-code-action@v1` allowlist in `.github/workflows/ai-docs-refresh.yaml` to `Read`, `Grep`, `Glob`, and path-scoped `Edit`/`Write` against only `CLAUDE.md` and `.github/copilot-instructions.md` via `--allowedTools`; prior runs logged `permission_denials_count: 30` per repo because the default harness let Claude probe tools that the scheduled context blocks, which burned turns and API spend on no-drift no-ops
+
+### Removed
+
+- removed `.github/workflows/repo-compliance-audit.yaml`, `.github/workflows/ai-docs-refresh.yaml`, `scripts/harden_repos.py`, and `scripts/refresh_ai_docs_prompt.md`; the fleet-wide scheduled workflows and hardening script moved to [`rios0rios0/fleet-maintenance`](https://github.com/rios0rios0/fleet-maintenance) so this repo stays focused on community health files and workflow templates. `README.md` and `CLAUDE.md` were updated to point at the new home and drop the dedicated sections
 
 ### Fixed
 
