@@ -16,6 +16,10 @@ Exceptions are acceptable depending on the circumstances (critical bug fixes tha
 
 ## [Unreleased]
 
+### Fixed
+
+- fixed `CLAUDE.md` references to workflow-template file extensions so both `*.yml` (language templates) and `*.yaml` (Claude templates) are covered when describing paired `*.properties.json` files and the inspection checklist
+
 ### Changed
 
 - changed `.github/workflows/ai-docs-refresh.yaml` matrix concurrency from `max-parallel: 5` to `max-parallel: 1` so the refresh job iterates serially through the ~60 target repos, feeding Anthropic's API a steady drip instead of a parallel burst and keeping the per-minute rate limit out of the failure envelope; `README.md` and the adjacent workflow comment were updated to match
