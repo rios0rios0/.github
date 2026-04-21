@@ -71,7 +71,12 @@ jobs:
       id-token: 'write'
     strategy:
       fail-fast: false
-      max-parallel: 5
+      # Serial execution (matrix-of-one) so Anthropic's API sees a steady
+      # single-request drip instead of bursts. A weekly run has room to spend
+      # ~9 h iterating through ~60 repos; a parallel burst chews through the
+      # per-minute rate limit and amplifies the cost of the permission-denial
+      # loop that each no-drift repo incurs.
+      max-parallel: 1
       matrix:
         repo: ${{ fromJSON(needs.discover.outputs.repos) }}
     steps:
@@ -104,7 +109,14 @@ jobs:
         uses: 'anthropics/claude-code-action@v1'
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
-          claude_args: '--model claude-opus-4-6'
+          # Tool permissions locked down to exactly what the refresh prompt
+          # needs: read the repo, and edit/create the two guidance files.
+          # Without this, telemetry showed ~30 `permission_denials_count`
+          # per run (the action allows Claude to probe many tools but the
+          # default harness denies most of them), which burned turns and
+          # $ on every no-drift no-op. See `scripts/refresh_ai_docs_prompt.md`
+          # for the rule that matches this allowlist.
+          claude_args: '--model claude-opus-4-6 --allowedTools "Read,Grep,Glob,Edit(/CLAUDE.md),Edit(/.github/copilot-instructions.md),Write(/CLAUDE.md),Write(/.github/copilot-instructions.md)"'
           prompt: ${{ steps.load-prompt.outputs.prompt }}
 
       - name: 'Detect drift and open PR if needed'
