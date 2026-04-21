@@ -71,11 +71,11 @@ jobs:
       id-token: 'write'
     strategy:
       fail-fast: false
-      # Serial execution (matrix-of-one) so Anthropic's API sees a steady
-      # single-request drip instead of bursts. A weekly run has room to spend
-      # ~9 h iterating through ~60 repos; a parallel burst chews through the
-      # per-minute rate limit and amplifies the cost of the permission-denial
-      # loop that each no-drift repo incurs.
+      # Serial matrix execution (max-parallel: 1) so Anthropic's API sees a
+      # steady single-request drip instead of bursts. A weekly run has room
+      # to spend ~9 h iterating through ~60 repos; a parallel burst chews
+      # through the per-minute rate limit and amplifies the cost of the
+      # permission-denial loop that each no-drift repo incurs.
       max-parallel: 1
       matrix:
         repo: ${{ fromJSON(needs.discover.outputs.repos) }}
