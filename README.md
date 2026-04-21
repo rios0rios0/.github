@@ -18,9 +18,8 @@ This is a special `.github` repository that acts as the **default community heal
 | `.editorconfig` | Editor configuration defaults |
 | `ISSUE_TEMPLATE/` | YAML-based bug report and feature request forms |
 | `PULL_REQUEST_TEMPLATE.md` | Default PR checklist |
-| `.github/workflows/` | Reusable Claude Code workflows (PR assistant and automatic code review) and the daily org-wide `repo-compliance-audit` workflow |
+| `.github/workflows/` | Reusable Claude Code workflows (PR assistant and automatic code review) |
 | `workflow-templates/` | Reusable CI/CD starter workflows for each supported language stack |
-| `scripts/harden_repos.py` | Repo hardening and compliance-audit script, invoked by the `repo-compliance-audit` workflow and the `/harden-repos` Claude slash command |
 
 ## How the Fallback Mechanism Works
 
@@ -53,47 +52,13 @@ Then add the caller workflows to each repo (or use the workflow templates from t
 - `workflow-templates/claude.yaml` — Claude PR assistant (`@claude` mentions)
 - `workflow-templates/claude-code-review.yaml` — automatic code review on PRs
 
-## Repo Compliance Audit
+## Fleet-Wide Scheduled Workflows
 
-`.github/workflows/repo-compliance-audit.yaml` runs daily (and on demand via `workflow_dispatch`) and invokes `scripts/harden_repos.py --phase 1 --fail-on-noncompliant`. The job fails if any `rios0rios0` repo drifts from the compliance policy (Dependabot on, secret scanning + push protection on public repos, branch protection with required signatures, `main-protection` ruleset with admin bypass, `has_wiki`/`has_projects` off, etc.).
-
-The workflow reads from a `COMPLIANCE_AUDIT_TOKEN` repository secret. Create a Personal Access Token and store it:
-
-```bash
-gh secret set COMPLIANCE_AUDIT_TOKEN -R rios0rios0/.github
-```
-
-The token must be able to list all private repos under the account and read security/ruleset endpoints. You can use either:
-
-- **Classic PAT** with the `repo` and `admin:repo_hook` scopes (simplest option); or
-- **Fine-grained PAT** scoped to all repositories under the account, with read access to `Administration`, `Contents`, `Metadata`, `Webhooks`, and read/write (or as needed) access to `Dependabot alerts` and `Secret scanning alerts`. Fine-grained PATs use per-resource permissions rather than OAuth scopes.
-
-To apply remediation locally (phases 2–4), use the `/harden-repos` Claude slash command, which wraps the same `scripts/harden_repos.py` from your `~/.claude/scripts/` copy.
-
-## AI Assistant Docs Refresh
-
-`.github/workflows/ai-docs-refresh.yaml` runs weekly on Mondays at 07:00 UTC (one hour after the compliance audit). For every non-fork non-archived `rios0rios0` repo it:
-
-1. Enumerates targets via `python3 scripts/harden_repos.py --list-json`.
-2. Checks out each repo into a serial matrix job (`max-parallel: 1`) so Anthropic's API sees a steady single-request drip instead of bursts.
-3. Invokes `anthropics/claude-code-action@v1` with the prompt in `scripts/refresh_ai_docs_prompt.md`, which instructs Claude to compare both `CLAUDE.md` and `.github/copilot-instructions.md` against the code and update whichever has **drifted**.
-4. Marks each file intent-to-add (`git add -N`) so newly created files in repos that lacked `CLAUDE.md` or `.github/copilot-instructions.md` are visible to the diff, then detects meaningful drift with `git diff -w --quiet -- CLAUDE.md .github/copilot-instructions.md`. If drift is found, force-pushes to a stable `chore/ai-docs-refresh` branch on the target repo and opens (or updates) a single combined PR. Repos where both files are accurate get no PR.
-
-The workflow needs two repository secrets on `rios0rios0/.github`:
-
-| Secret | Purpose | Scope |
-|---|---|---|
-| `CLAUDE_CODE_OAUTH_TOKEN` | Authenticates `anthropics/claude-code-action@v1` (already set for the existing Claude workflows). | n/a |
-| `CLAUDE_MD_REFRESH_TOKEN` | Pushes the `chore/ai-docs-refresh` branch and opens PRs on every target repo. Distinct from the read-only `COMPLIANCE_AUDIT_TOKEN`. | Fine-grained PAT scoped to all repositories under `rios0rios0`, with `Contents: write`, `Pull requests: write`, and `Metadata: read`. |
-
-To test against a single repo before letting the cron run account-wide, trigger the workflow manually with the `repo` input:
-
-```bash
-gh workflow run ai-docs-refresh.yaml -R rios0rios0/.github -f repo=autobump
-```
+The daily `repo-compliance-audit` and weekly `ai-docs-refresh` workflows, along with the `harden_repos.py` hardening script, live in a dedicated repository: **[rios0rios0/fleet-maintenance](https://github.com/rios0rios0/fleet-maintenance)**. See that repo's README for secret setup and manual dispatch instructions.
 
 ## Related Repositories
 
+- **[fleet-maintenance](https://github.com/rios0rios0/fleet-maintenance)** — Scheduled workflows that audit repo compliance daily and refresh AI-assistant guidance weekly across every `rios0rios0` repository.
 - **[pipelines](https://github.com/rios0rios0/pipelines)** — Production-ready SDLC pipelines (GitHub Actions, GitLab CI, Azure DevOps). All workflow templates here delegate to reusable workflows defined there.
 - **[autobump](https://github.com/rios0rios0/autobump)** — Automated CHANGELOG and release management enforcing Keep a Changelog + SemVer.
 - **[guide](https://github.com/rios0rios0/guide/wiki)** — Development standards wiki covering Git Flow, architecture, CI/CD, security, testing, and code style conventions used across all `rios0rios0` projects.
