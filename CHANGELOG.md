@@ -16,6 +16,10 @@ Exceptions are acceptable depending on the circumstances (critical bug fixes tha
 
 ## [Unreleased]
 
+### Added
+
+- added `.github/copilot-instructions.md` with repository purpose, conventions, and cross-reference to `CLAUDE.md` so GitHub Copilot sessions get the same non-obvious guidance (YAML extension rules, single-quote policy, actions pin discipline, template pairing)
+
 ## [0.2.2] - 2026-04-21
 
 ### Changed
