@@ -16,6 +16,10 @@ Exceptions are acceptable depending on the circumstances (critical bug fixes tha
 
 ## [Unreleased]
 
+### Changed
+
+- changed the reusable Claude Code workflows `.github/workflows/claude.yaml` and `.github/workflows/claude-code-review.yaml` to pin `claude-opus-4-8` instead of `claude-opus-4-6`, so every `rios0rios0` repository consuming these reusable workflows runs the on-demand `@claude` and PR-review jobs on Claude Opus 4.8
+
 ## [0.3.0] - 2026-05-08
 
 ### Added
