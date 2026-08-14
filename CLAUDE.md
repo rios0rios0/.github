@@ -9,7 +9,9 @@ This is GitHub's special `.github` repository for the `rios0rios0` account. It s
 1. **Community health file fallback** — files at the repo root (`CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, `SECURITY.md`, `LICENSE`, `PULL_REQUEST_TEMPLATE.md`, `ISSUE_TEMPLATE/`, `FUNDING.yml`, `.editorconfig`) are automatically applied to every `rios0rios0` repository that does not define its own copy. Edits here propagate to the entire account.
 2. **Workflow templates and reusable Claude Code workflows** — files in `workflow-templates/` appear in the **Actions → New workflow** picker across all `rios0rios0` repos. Each workflow template (`*.yml`/`*.yaml`) has a paired `*.properties.json` (name/description/icon/categories). All templates are thin wrappers that call reusable workflows from [`rios0rios0/pipelines`](https://github.com/rios0rios0/pipelines) via `uses: rios0rios0/pipelines/.github/workflows/<lang>-docker.yaml@v3`. `.github/workflows/claude.yaml` and `.github/workflows/claude-code-review.yaml` are reusable Claude Code workflows (`workflow_call`) consumed by `workflow-templates/claude*.yaml` in every repo.
 
-**Fleet-wide scheduled workflows live elsewhere.** The daily `repo-compliance-audit`, the weekly `ai-docs-refresh`, and the `harden_repos.py` hardening script now live in [`rios0rios0/fleet-maintenance`](https://github.com/rios0rios0/fleet-maintenance). Changes to repo hardening policy, the AI docs refresh prompt, or either workflow belong there, not here.
+**Fleet-wide scheduled workflows live elsewhere.** The daily `repo-compliance-audit`, the weekly `config-and-docs-refresh`, the weekly `release-reconcile`, and the `harden-repos` Go CLI that drives them live in [`rios0rios0/config-automation`](https://github.com/rios0rios0/config-automation). Changes to repo hardening policy, the refresh prompt, or any of those workflows belong there, not here.
+
+**Community health fallback is account-scoped; the automation is not.** Files in this repo only reach `rios0rios0` repositories — GitHub's fallback does not cross accounts. The `config-automation` workflows read a comma-separated `HARDEN_OWNER` and currently cover `rios0rios0`, `medhub-tech`, and `prefy`. So "every repo we maintain" and "every repo that inherits these files" are no longer the same set: do not widen wording here to imply the other organizations inherit anything from this repository.
 
 ## Build / Test / Lint
 
@@ -24,7 +26,7 @@ There is no build, test, or lint tooling in this repo. Changes are validated by 
 
 ## Related Repositories (load-bearing context)
 
-- [`rios0rios0/fleet-maintenance`](https://github.com/rios0rios0/fleet-maintenance) — scheduled fleet-wide workflows (compliance audit + AI docs refresh) and the `harden_repos.py` hardening script. Changes to repo hardening policy or either scheduled workflow belong there.
+- [`rios0rios0/config-automation`](https://github.com/rios0rios0/config-automation) — scheduled fleet-wide workflows (compliance audit, config/docs refresh, release reconciliation) and the `harden-repos` Go CLI. Changes to repo hardening policy or any scheduled workflow belong there. Covers `rios0rios0`, `medhub-tech`, and `prefy` via `HARDEN_OWNER`.
 - [`rios0rios0/pipelines`](https://github.com/rios0rios0/pipelines) — all workflow templates here delegate to reusable workflows there (`@v3`). Changes to pipeline behavior belong in that repo, not here.
 - [`rios0rios0/autobump`](https://github.com/rios0rios0/autobump) — releases `CHANGELOG.md` entries into versioned sections.
 - [`rios0rios0/guide`](https://github.com/rios0rios0/guide/wiki) — canonical development standards (architecture, Git flow, testing, code style).

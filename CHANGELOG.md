@@ -16,6 +16,14 @@ Exceptions are acceptable depending on the circumstances (critical bug fixes tha
 
 ## [Unreleased]
 
+### Fixed
+
+- fixed `README.md`, `CLAUDE.md`, and `.github/copilot-instructions.md` pointing the fleet-wide scheduled workflows at `rios0rios0/fleet-maintenance`, which was renamed to [`rios0rios0/config-automation`](https://github.com/rios0rios0/config-automation); the same references also named the retired `ai-docs-refresh` workflow and `harden_repos.py` script instead of the current `config-and-docs-refresh`, `release-reconcile`, and the `harden-repos` Go CLI
+
+### Changed
+
+- changed the documentation to record that the fleet-wide maintenance automation now covers `medhub-tech` and `prefy` alongside `rios0rios0`, while stating explicitly that this repository's community health fallback remains account-scoped by GitHub's design and does not reach those organizations
+
 ## [0.3.1] - 2026-05-29
 
 ### Changed

@@ -20,7 +20,7 @@ Validate by inspection: YAML syntax, template pairing, and workflow input declar
 
 ## Related repos
 
-- `rios0rios0/fleet-maintenance` — fleet-wide scheduled workflows and hardening script. Not here.
+- `rios0rios0/config-automation` — fleet-wide scheduled workflows (compliance audit, config/docs refresh, release reconciliation) and the `harden-repos` Go CLI. Not here. Covers `rios0rios0`, `medhub-tech`, and `prefy` via its comma-separated `HARDEN_OWNER`.
 - `rios0rios0/pipelines` — reusable CI/CD workflows called by language templates.
 
 See `CLAUDE.md` at the repo root for full context.
