@@ -6,6 +6,8 @@ Default community health files, issue/PR templates, and workflow templates for a
 
 This is a special `.github` repository that acts as the **default community health file hub** for every repository under the `rios0rios0` GitHub account. Any repository that does not define its own version of these files will automatically inherit them from here.
 
+The fallback is **scoped to one account by GitHub's design** — it does not reach other organizations. The scheduled maintenance automation in [`config-automation`](https://github.com/rios0rios0/config-automation) now covers `medhub-tech` and `prefy` as well, but those organizations do not inherit anything from this repository; each would need its own `.github` repository to get these defaults.
+
 ## What It Contains
 
 | Path | Purpose |
@@ -35,6 +37,8 @@ See [GitHub's documentation on default community health files](https://docs.gith
 
 The reusable Claude workflows in `.github/workflows/` require a `CLAUDE_CODE_OAUTH_TOKEN` secret on each repository that uses them. Since this is a personal account (no organization-level secrets), set the secret across all repos with:
 
+> The loop below targets `rios0rios0` because no repository in `medhub-tech` or `prefy` calls these reusable workflows today. If one adopts them, run the same loop against that organization — secrets are per-repository, and nothing propagates across accounts.
+
 ```bash
 read -sp 'CLAUDE_CODE_OAUTH_TOKEN: ' TOKEN && echo
 for repo in $(gh repo list rios0rios0 --limit 1000 --json name -q '.[].name'); do
@@ -54,11 +58,13 @@ Then add the caller workflows to each repo (or use the workflow templates from t
 
 ## Fleet-Wide Scheduled Workflows
 
-The daily `repo-compliance-audit` and weekly `ai-docs-refresh` workflows, along with the `harden_repos.py` hardening script, live in a dedicated repository: **[rios0rios0/fleet-maintenance](https://github.com/rios0rios0/fleet-maintenance)**. See that repo's README for secret setup and manual dispatch instructions.
+The daily `repo-compliance-audit`, the weekly `config-and-docs-refresh`, and the weekly `release-reconcile` workflows, along with the `harden-repos` Go CLI that drives them, live in a dedicated repository: **[rios0rios0/config-automation](https://github.com/rios0rios0/config-automation)**. See that repo's README for secret setup and manual dispatch instructions.
+
+Those workflows are **not** limited to `rios0rios0`: they read a comma-separated `HARDEN_OWNER` list and currently cover `rios0rios0`, `medhub-tech`, and `prefy`. Adding an organization there means extending that list, not editing this repository.
 
 ## Related Repositories
 
-- **[fleet-maintenance](https://github.com/rios0rios0/fleet-maintenance)** — Scheduled workflows that audit repo compliance daily and refresh AI-assistant guidance weekly across every `rios0rios0` repository.
+- **[config-automation](https://github.com/rios0rios0/config-automation)** — Scheduled workflows that audit repo compliance daily, refresh configuration and AI-assistant guidance weekly, and reconcile missing release tags weekly, across every organization in `HARDEN_OWNER` (`rios0rios0`, `medhub-tech`, `prefy`).
 - **[pipelines](https://github.com/rios0rios0/pipelines)** — Production-ready SDLC pipelines (GitHub Actions, GitLab CI, Azure DevOps). All workflow templates here delegate to reusable workflows defined there.
 - **[autobump](https://github.com/rios0rios0/autobump)** — Automated CHANGELOG and release management enforcing Keep a Changelog + SemVer.
 - **[guide](https://github.com/rios0rios0/guide/wiki)** — Development standards wiki covering Git Flow, architecture, CI/CD, security, testing, and code style conventions used across all `rios0rios0` projects.
