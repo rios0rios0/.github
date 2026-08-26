@@ -29,6 +29,7 @@ Make sure you have the following installed before you begin:
 | `git` | Version control |
 | `make` | Task runner (lint, test, build) |
 | `docker` | Containerised builds and tests |
+| `chlog` | Changelog fragments — needed only in a repository carrying a `.chlog.yaml`. Install with `go install github.com/luizjhonata/chlog@latest` (needs a Go toolchain) or take a [prebuilt binary](https://github.com/luizjhonata/chlog/releases) |
 | Language runtime | Go, Python, Java, Node.js, etc. — see the repository's own README |
 
 ---
@@ -71,9 +72,20 @@ The format is `type(optional scope): short description`. Common types include `f
 
 ## Changelog
 
-Every pull request that introduces a user-facing change **must** update `CHANGELOG.md` under the `[Unreleased]` section following [Keep a Changelog v1.1.0](https://keepachangelog.com/en/1.1.0/). Use the standard categories: Added, Changed, Deprecated, Removed, Fixed, Security.
+**Which rule applies depends on the repository — look for a `.chlog.yaml` at its root.**
 
-> **CI enforcement:** The pipeline validates that any PR modifying source files also touches the `[Unreleased]` section.
+**With a `.chlog.yaml`:** `CHANGELOG.md` is **generated**, not edited, and every pull request that introduces a user-facing change **must** add a [chlog](https://github.com/luizjhonata/chlog) fragment — its own YAML file under `.changes/unreleased/` — in the same commit:
+
+```bash
+chlog new --kind Added --body "added the thing that was not there before"
+chlog new --kind Changed --breaking --body "..."   # the only thing that bumps the major
+```
+
+The kinds are the [Keep a Changelog v1.1.0](https://keepachangelog.com/en/1.1.0/) categories: Added, Changed, Deprecated, Removed, Fixed, Security. Because each fragment is a separate file, two branches each recording a change no longer touch the same lines, so a rebase that used to conflict on `CHANGELOG.md` now conflicts on nothing. A release compiles the pending fragments into a version section with `chlog batch auto && chlog merge` — which is what a `bump/x.x.x` branch carries, and what `autobump` does for you.
+
+**Without a `.chlog.yaml`:** that repository has not adopted chlog yet, and the older rule still stands — edit `CHANGELOG.md` by hand and put your entry under the `[Unreleased]` section, in the same [Keep a Changelog v1.1.0](https://keepachangelog.com/en/1.1.0/) categories. An entry that lands below an existing version section fails the check.
+
+> **CI enforcement:** In a repository carrying a `.chlog.yaml`, the pipeline requires a **new fragment** on an ordinary branch and an updated `CHANGELOG.md` on a `bump/*` one. A repository that has not adopted chlog yet is checked the old way: the PR must touch the `[Unreleased]` section.
 
 > For the full changelog standard and writing rules, see [Documentation & Change Control](https://github.com/rios0rios0/guide/wiki/Documentation-&-Change-Control) in the Development Guide.
 
@@ -118,7 +130,7 @@ New features **must** include corresponding tests. The CI pipeline enforces mini
    - Code Check (lint, format)
    - Security (SAST, SCA, secrets scanning)
    - Tests (unit, integration)
-   - Management (CHANGELOG validation, commit message validation, rebase check)
+   - Management (changelog validation — a new fragment, or `CHANGELOG.md` itself on a bump branch — commit message validation, rebase check)
    - Delivery (build, Docker image push — only on `main`)
 4. **Squash or rebase merge only.** Merge commits are not allowed.
 5. Link related issues with `Closes #<issue-number>` in the PR description.

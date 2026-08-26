@@ -25,7 +25,7 @@ Closes #
 
 - [ ] I have read the [CONTRIBUTING.md](https://github.com/rios0rios0/.github/blob/main/CONTRIBUTING.md) guidelines
 - [ ] My branch is rebased on top of `main` (no merge commits)
-- [ ] I have updated `CHANGELOG.md` under `[Unreleased]` (if applicable)
+- [ ] I have added a changelog fragment with `chlog new` — or, in a repository with no `.chlog.yaml` yet, updated `CHANGELOG.md` under `[Unreleased]` (if applicable)
 - [ ] My commit messages follow [Conventional Commits](https://www.conventionalcommits.org/)
 - [ ] I have added or updated tests for my changes
 - [ ] I have run `make lint` and `make test` locally and they pass
