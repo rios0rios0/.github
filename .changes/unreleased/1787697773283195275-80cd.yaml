@@ -1,3 +1,0 @@
-kind: 'Changed'
-body: 'changed the fallback `CONTRIBUTING.md` so the changelog rule is stated conditionally, the way `PULL_REQUEST_TEMPLATE.md` already stated it. This file is GitHub''s fallback for every repository without its own, and not every repository has adopted chlog yet: the Changelog section now splits explicitly into the `.chlog.yaml` case (add a fragment) and the no-`.chlog.yaml` case (edit `CHANGELOG.md` under `[Unreleased]`), and the prerequisites table marks chlog as needed only in the former.'
-time: '2026-08-25T22:42:53.282944017Z'
