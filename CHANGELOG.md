@@ -22,6 +22,17 @@ Exceptions are acceptable depending on the circumstances (critical bug fixes tha
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-08-26
+
+### Added
+
+- added a tailored `code-review` skill under `.github/skills/` so GitHub Copilot reviews changes against the [rios0rios0/guide](https://github.com/rios0rios0/guide/wiki) standards and this repository's own load-bearing invariants
+
+### Changed
+
+- changed the changelog to [chlog](https://github.com/luizjhonata/chlog) fragments: a change now writes its own YAML file under `.changes/unreleased/` through `chlog new --kind <Kind> --body "..."`, and `CHANGELOG.md` is GENERATED from them at release time by `chlog batch auto && chlog merge`. That is the one thing a single shared file cannot do — two branches each adding an entry no longer touch the same lines, so a rebase that used to conflict on `CHANGELOG.md` now conflicts on nothing. The `[Unreleased]` section was empty, so nothing had to be carried across. AutoBump already reads the fragments directly, so the release flow is unchanged.
+- changed the fallback `CONTRIBUTING.md` so the changelog rule is stated conditionally, the way `PULL_REQUEST_TEMPLATE.md` already stated it. This file is GitHub's fallback for every repository without its own, and not every repository has adopted chlog yet: the Changelog section now splits explicitly into the `.chlog.yaml` case (add a fragment) and the no-`.chlog.yaml` case (edit `CHANGELOG.md` under `[Unreleased]`), and the prerequisites table marks chlog as needed only in the former.
+
 ## [0.3.2] - 2026-08-15
 
 ### Changed
