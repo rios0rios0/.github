@@ -35,9 +35,11 @@ See [GitHub's documentation on default community health files](https://docs.gith
 
 ## Claude Code Setup
 
-The reusable Claude workflows in `.github/workflows/` require a `CLAUDE_CODE_OAUTH_TOKEN` secret on each repository that uses them. Since this is a personal account (no organization-level secrets), set the secret across all repos with:
+The reusable Claude workflows live in [`rios0rios0/pipelines`](https://github.com/rios0rios0/pipelines) (`reusable-claude-review.yaml` and `reusable-claude-mention.yaml`). The `reusable-` prefix marks a
+definition; the callers here and in `workflow-templates/` drop it and are named `claude-review.yaml`
+and `claude-mention.yaml`, exactly as a consuming repository names them. Each caller needs a `CLAUDE_CODE_OAUTH_TOKEN` secret it can read. `rios0rios0` is a personal account and has no organization-level secrets, so set it per repository:
 
-> The loop below targets `rios0rios0` because no repository in `medhub-tech` or `prefy` calls these reusable workflows today. If one adopts them, run the same loop against that organization — secrets are per-repository, and nothing propagates across accounts.
+> The loop below targets `rios0rios0` only. The `medhub-life` and `prefy` organizations hold the same secret as an **organization** secret with `visibility: all`, which reaches their private repositories, so they need no per-repository loop. Nothing propagates across accounts — an organization secret covers that organization alone.
 
 ```bash
 read -sp 'CLAUDE_CODE_OAUTH_TOKEN: ' TOKEN && echo
@@ -53,8 +55,8 @@ done
 
 Then add the caller workflows to each repo (or use the workflow templates from the **Actions > New workflow** picker):
 
-- `workflow-templates/claude.yaml` — Claude PR assistant (`@claude` mentions)
-- `workflow-templates/claude-code-review.yaml` — automatic code review on PRs
+- `workflow-templates/claude-review.yaml` — automatic code review on PRs
+- `workflow-templates/claude-mention.yaml` — Claude PR assistant (`@claude` mentions)
 
 ## Fleet-Wide Scheduled Workflows
 
