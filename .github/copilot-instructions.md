@@ -3,13 +3,13 @@ This is the `.github` repository for the `rios0rios0` account — community heal
 ## Repository purpose
 
 1. **Community health file fallback** — root files (`CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, `SECURITY.md`, `LICENSE`, `PULL_REQUEST_TEMPLATE.md`, `ISSUE_TEMPLATE/`, `FUNDING.yml`, `.editorconfig`) propagate to every `rios0rios0` repo that lacks its own copy.
-2. **Workflow templates** — `workflow-templates/` entries appear in the Actions picker. Language templates (`*.yml`) call `rios0rios0/pipelines` reusable workflows (`@v3`). Claude templates (`*.yaml`) call reusable workflows in `.github/workflows/` of this repo.
+2. **Workflow templates** — `workflow-templates/` entries appear in the Actions picker. All templates are thin callers of `rios0rios0/pipelines` reusable workflows: language templates (`*.yml`) pin `@v3`; Claude templates (`*.yaml`) call `reusable-claude-review.yaml` / `reusable-claude-mention.yaml` at `@main`. This repo's own `.github/workflows/claude-*.yaml` are the same callers and pass `CLAUDE_CODE_OAUTH_TOKEN` explicitly (never `secrets: inherit`).
 
 ## Conventions
 
 - **YAML extension**: new workflows use `.yaml`, not `.yml`. Existing `workflow-templates/*.yml` are grandfathered — leave them as-is.
 - **YAML strings**: single-quoted.
-- **Actions pins**: keep all workflows on the same latest major (`actions/checkout@v6`, `anthropics/claude-code-action@v1`). Bump everywhere in one commit.
+- **Actions pins**: no workflow here calls a third-party action; every `uses:` points at a `rios0rios0/pipelines` reusable workflow (`@v3` for language templates, `@main` for Claude). `pipelines` pins its own actions to commit SHAs.
 - **Changelog**: every change writes its own fragment with `chlog new --kind <Kind> --body "..."` in the same commit; `CHANGELOG.md` is generated from them and never edited by hand. Simple past tense.
 - **Commits**: `type(SCOPE): message`, simple past tense, no trailing period.
 - **Template pairing**: every `workflow-templates/*.yml` or `*.yaml` must have a paired `*.properties.json`.

@@ -1,0 +1,3 @@
+kind: 'Changed'
+body: 'refreshed `.github/copilot-instructions.md` and `.github/skills/code-review/SKILL.md` to match the `0.4.1` workflow change: the Claude templates now call `rios0rios0/pipelines` reusable workflows (`reusable-claude-review.yaml` / `reusable-claude-mention.yaml`) at `@main`, not reusable workflows in this repo''s `.github/workflows/`, and no workflow here pins a third-party action any more'
+time: '2026-09-01T16:54:14.136831001Z'
