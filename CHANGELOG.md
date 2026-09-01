@@ -22,6 +22,12 @@ Exceptions are acceptable depending on the circumstances (critical bug fixes tha
 
 ## [Unreleased]
 
+## [0.4.2] - 2026-09-01
+
+### Changed
+
+- refreshed `.github/copilot-instructions.md` and `.github/skills/code-review/SKILL.md` to match the `0.4.1` workflow change: the Claude templates now call `rios0rios0/pipelines` reusable workflows (`reusable-claude-review.yaml` / `reusable-claude-mention.yaml`) at `@main`, not reusable workflows in this repo's `.github/workflows/`, and no workflow here pins a third-party action any more
+
 ## [0.4.1] - 2026-08-28
 
 ### Changed
