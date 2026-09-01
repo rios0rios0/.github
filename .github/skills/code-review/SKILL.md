@@ -66,8 +66,8 @@ them before the generic ones.
 - **Root files are org-wide fallbacks.** Editing `CONTRIBUTING.md`, `SECURITY.md`, `CODE_OF_CONDUCT.md`, or a template changes what contributors see in every repository without its own copy. Weigh each change at that scale, and make sure it stays true for a Delphi archive as well as for a Go service.
 - **Every `workflow-templates/*.yml` or `*.yaml` needs a paired `*.properties.json`** — an unpaired template does not appear in the Actions picker and looks like it silently did nothing.
 - **New workflows use `.yaml`.** The existing `workflow-templates/*.yml` files are grandfathered — leave them as they are rather than churning the picker.
-- **Language templates call the `rios0rios0/pipelines` reusable workflows at `@v3`; Claude templates call the reusable workflows in this repository's `.github/workflows/`.** Mixing the two, or pinning a consumer template to a moving reference, is a finding.
-- **Action pins stay on one major across all workflows** (`actions/checkout@v6`, `anthropics/claude-code-action@v1`) and are bumped everywhere in a single commit.
+- **Every template calls a `rios0rios0/pipelines` reusable workflow.** Language templates pin `@v3`; Claude templates (`claude-review.yaml`, `claude-mention.yaml`) call `reusable-claude-review.yaml` / `reusable-claude-mention.yaml` at `@main`. This repo's own `.github/workflows/claude-*.yaml` are the same callers and pass `CLAUDE_CODE_OAUTH_TOKEN` explicitly rather than with `secrets: inherit`. A Claude template still pointing at a local `.github/workflows/` reusable workflow, or a language template moved off `@v3`, is a finding.
+- **No workflow here calls a third-party action.** Every `uses:` points at a `rios0rios0/pipelines` reusable workflow, which pins its own actions to commit SHAs. A third-party `uses:` reintroduced into a workflow here is a finding.
 - **`SECURITY.md` must state a working reporting channel.** A stale address here means vulnerability reports go nowhere.
 - YAML string values are single-quoted; booleans and numbers are never quoted.
 
