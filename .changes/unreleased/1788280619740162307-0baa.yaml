@@ -1,3 +1,0 @@
-kind: 'Changed'
-body: 'refreshed `SKILL.md` to replace the Gitleaks-matchable secret shapes in the secret-hygiene bullet with deliberately truncated vendor prefixes'
-time: '2026-09-07T07:30:00.000000000Z'
