@@ -77,8 +77,8 @@ The format is `type(optional scope): short description`. Common types include `f
 **With a `.chlog.yaml`:** `CHANGELOG.md` is **generated**, not edited, and every pull request that introduces a user-facing change **must** add a [chlog](https://github.com/luizjhonata/chlog) fragment — its own YAML file under `.changes/unreleased/` — in the same commit:
 
 ```bash
-chlog new --kind Added --body "added the thing that was not there before"
-chlog new --kind Changed --breaking --body "..."   # the only thing that bumps the major
+chlog new --kind Added --body 'added the thing that was not there before'
+chlog new --kind Changed --breaking --body '...'   # the only thing that bumps the major
 ```
 
 The kinds are the [Keep a Changelog v1.1.0](https://keepachangelog.com/en/1.1.0/) categories: Added, Changed, Deprecated, Removed, Fixed, Security. Because each fragment is a separate file, two branches each recording a change no longer touch the same lines, so a rebase that used to conflict on `CHANGELOG.md` now conflicts on nothing. A release compiles the pending fragments into a version section with `chlog batch auto && chlog merge` — which is what a `bump/x.x.x` branch carries, and what `autobump` does for you.

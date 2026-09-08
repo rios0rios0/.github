@@ -21,7 +21,7 @@ There is no build, test, or lint tooling in this repo. Changes are validated by 
 
 - **YAML files must use `.yaml`** (not `.yml`), with string values single-quoted. The existing `workflow-templates/*.yml` predate this rule and intentionally match GitHub's template filename convention — leave them as-is. New workflows under `.github/workflows/` should follow the single-quote rule.
 - **Actions pins:** no workflow here calls a third-party action any more — the only `uses:` left point at reusable workflows in `rios0rios0/pipelines`, which pins its own actions to commit SHAs. Keep those references on `@main`.
-- **Changelog discipline:** every change writes its own fragment with `chlog new --kind <Kind> --body "..."` in the same commit. `CHANGELOG.md` is generated from the fragments and is never edited by hand. Simple past tense, backticks around code identifiers.
+- **Changelog discipline:** every change writes its own fragment with `chlog new --kind <Kind> --body '...'` in the same commit. `CHANGELOG.md` is generated from the fragments and is never edited by hand. Simple past tense, backticks around code identifiers.
 - **Commits:** `type(SCOPE): message` in simple past tense, no trailing period. See `.claude/rules/git-flow.md` in the user's global rules.
 
 ## Related Repositories (load-bearing context)
@@ -42,13 +42,14 @@ being asked, before committing.
 
 - Do NOT edit CHANGELOG.md directly; it is generated from fragments.
 - Create the fragment with:
-  `chlog new --kind <Kind> --body "<imperative description>"`
+  `chlog new --kind <Kind> --body '<past-tense description>'`
+- Write an apostrophe inside the single-quoted body as `'\''`.
 - Valid kinds: Added, Changed, Deprecated, Removed, Fixed, Security
 - Choose the kind that best matches the change (e.g., new feature → Added,
   bug fix → Fixed, behavior change → Changed, removal → Removed, security fix → Security).
 - If the change is backward-INCOMPATIBLE with the public API (a breaking
   change), you MUST add the `--breaking` flag:
-  `chlog new --kind <Kind> --breaking --body "<description>"`.
+  `chlog new --kind <Kind> --breaking --body '<past-tense description>'`.
   This is the ONLY thing that triggers a major version bump — the kind alone
   never does (per SemVer, major = incompatible change). When unsure whether a
   change breaks compatibility, ask the user instead of guessing.
