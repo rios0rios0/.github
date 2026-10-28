@@ -20,7 +20,7 @@ The fallback is **scoped to one account by GitHub's design** — it does not rea
 | `.editorconfig` | Editor configuration defaults |
 | `ISSUE_TEMPLATE/` | YAML-based bug report and feature request forms |
 | `PULL_REQUEST_TEMPLATE.md` | Default PR checklist |
-| `.github/workflows/` | Reusable Claude Code workflows (PR assistant and automatic code review) |
+| `.github/workflows/` | This repository's own CI: the Claude Code callers (PR assistant and automatic code review) and the `checks` gate (rebase status and changelog rule) |
 | `workflow-templates/` | Reusable CI/CD starter workflows for each supported language stack |
 
 ## How the Fallback Mechanism Works

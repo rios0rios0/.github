@@ -1,0 +1,3 @@
+kind: 'Changed'
+body: 'moved the agent instructions from `CLAUDE.md` to `AGENTS.md`, keeping a `CLAUDE.md` that imports it, and refreshed `AGENTS.md`, `.github/copilot-instructions.md`, `.github/skills/code-review/SKILL.md`, and `README.md` to point at `AGENTS.md` instead of `CLAUDE.md`, state the `@v3` pin for language templates and `@main` for the Claude callers and `checks.yaml`, document the `checks` pull-request gate, and exempt `FUNDING.yml` and `ISSUE_TEMPLATE/config.yml` from the `.yaml` extension rule'
+time: '2026-10-28T21:38:40.736622603Z'
