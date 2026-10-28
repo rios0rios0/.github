@@ -16,14 +16,14 @@ This is the `.github` repository for the `rios0rios0` account — community heal
 
 ## No build tooling
 
-Validate by inspection: YAML syntax, template pairing, and workflow input declarations.
+Pull requests run `.github/workflows/checks.yaml` (the shared rebase-status and changelog-fragment gate). Validate everything else by inspection: YAML syntax, template pairing, and workflow input declarations.
 
 ## Related repos
 
 - `rios0rios0/config-automation` — fleet-wide scheduled workflows (compliance audit, config/docs refresh, release reconciliation) and the `harden-repos` Go CLI. Not here. Covers `rios0rios0`, `medhub-tech`, and `prefy` via its comma-separated `HARDEN_OWNER`.
-- `rios0rios0/pipelines` — reusable CI/CD workflows called by language templates.
+- `rios0rios0/pipelines` — reusable CI/CD workflows called by every template and workflow here.
 
-See `CLAUDE.md` at the repo root for full context.
+See `AGENTS.md` at the repo root for full context.
 
 <!-- chlog:start -->
 ## Changelog (chlog) — MANDATORY
