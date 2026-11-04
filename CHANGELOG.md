@@ -22,6 +22,12 @@ Exceptions are acceptable depending on the circumstances (critical bug fixes tha
 
 ## [Unreleased]
 
+## [0.5.2] - 2026-11-04
+
+### Changed
+
+- moved the agent instructions from `CLAUDE.md` to `AGENTS.md`, keeping a `CLAUDE.md` that imports it, and refreshed `AGENTS.md`, `.github/copilot-instructions.md`, `.github/skills/code-review/SKILL.md`, and `README.md` to point at `AGENTS.md` instead of `CLAUDE.md`, state the `@v3` pin for language templates and `@main` for the Claude callers and `checks.yaml`, document the `checks` pull-request gate, and exempt `FUNDING.yml` and `ISSUE_TEMPLATE/config.yml` from the `.yaml` extension rule
+
 ## [0.5.1] - 2026-09-08
 
 ### Changed
